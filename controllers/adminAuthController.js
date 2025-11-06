@@ -243,6 +243,13 @@ const verifyAdminToken = async (req, res) => {
 // Check admin registration status
 const checkAdminStatus = async (req, res) => {
   try {
+    // Add CORS headers explicitly
+    const origin = req.headers.origin;
+    if (origin) {
+      res.header('Access-Control-Allow-Origin', origin);
+      res.header('Access-Control-Allow-Credentials', 'true');
+    }
+    
     const adminExists = await checkAdminExists();
     res.json({
       adminExists,
@@ -252,6 +259,12 @@ const checkAdminStatus = async (req, res) => {
     });
   } catch (error) {
     console.error('Check admin status error:', error);
+    // Add CORS headers even on error
+    const origin = req.headers.origin;
+    if (origin) {
+      res.header('Access-Control-Allow-Origin', origin);
+      res.header('Access-Control-Allow-Credentials', 'true');
+    }
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

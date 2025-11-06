@@ -48,11 +48,20 @@ function isVercelPreview(origin) {
 
 app.use(cors({
   origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
+    
+    // Always allow localhost for development
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
+    }
+    
+    // Check allowed origins
     if (allowedOrigins.includes(origin) || isVercelPreview(origin)) {
       callback(null, true);
     } else {
       console.log('CORS blocked origin:', origin);
+      console.log('Allowed origins:', allowedOrigins);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -67,17 +76,30 @@ app.use(cors({
 // Additional CORS headers for all routes
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin) || isVercelPreview(origin)) {
+  
+  // Always allow localhost for development
+  if (origin && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Length');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
+    }
+    return next();
+  }
+  
+  // Check allowed origins for production
+  if (origin && (allowedOrigins.includes(origin) || isVercelPreview(origin))) {
     res.header('Access-Control-Allow-Origin', origin);
   }
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Length');
   res.header('Access-Control-Allow-Credentials', 'true');
   if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
+    return res.sendStatus(200);
   }
+  next();
 });
 
 app.use(express.json());
