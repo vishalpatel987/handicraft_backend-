@@ -34,16 +34,21 @@ const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5173',
   process.env.ADMIN_FRONTEND_URL || 'http://localhost:5174',
   process.env.BACKEND_URL || 'http://localhost:5175',
-  'https://handicarft-user.vercel.app',
+  'https://handicraft-user.vercel.app',
+  'https://handicarft-user.vercel.app', // legacy typo support
+  'https://handicraft-admin.vercel.app',
+  'https://handicraft-admin-pi.vercel.app',
   'https://handicraft-admin-iota.vercel.app',
-  // 'https://www.rikocraft.com',
-  // 'https://pawnadmin-thnt.vercel.app',
-  // 'https://pawn-shop-git-local-host-api-used-aditya200410s-projects.vercel.app'
+  'https://handicarft-backend.onrender.com',
+  // Add any additional production domains above this line
 ];
 
 function isVercelPreview(origin) {
-  // If you want to allow all Vercel preview deploys for this project, keep this regex:
-  return /^https:\/\/pawn-shop-git-.*-aditya200410s-projects\.vercel\.app$/.test(origin);
+  const previewPatterns = [
+    /^https:\/\/handicraft-(admin|user)-.*\.vercel\.app$/,
+    /^https:\/\/handicarft-(admin|user)-.*\.vercel\.app$/
+  ];
+  return previewPatterns.some((pattern) => pattern.test(origin));
 }
 
 app.use(cors({
