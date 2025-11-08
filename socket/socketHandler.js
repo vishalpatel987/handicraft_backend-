@@ -17,11 +17,8 @@ const initializeSocket = (server) => {
         process.env.ADMIN_FRONTEND_URL || 'http://localhost:5174',
         process.env.BACKEND_URL || 'http://localhost:5175',
         'https://handicraft-user.vercel.app',
-        'https://handicarft-user.vercel.app',
-        'https://handicraft-admin.vercel.app',
-        'https://handicraft-admin-pi.vercel.app',
-        'https://handicraft-admin-iota.vercel.app',
-        'https://handicarft-backend.onrender.com',
+        'https://handicraft-admin-seven.vercel.app',
+        'https://handicraft-backend-phfz.onrender.com',
       ],
       methods: ['GET', 'POST'],
       credentials: true
